@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- chart -->
+{% if high_scores %}
+<div class="container">
+    <div class="ct-chart"></div>
+    <div class="text-center text-muted"><small> score chart </small> </div> <br>
+</div>
+{% endif %}
+{% if errmsg%}
+<div class="container">
+		<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  		<strong>Error</strong> {{ errmsg }}
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+  		</button>
+  </div>
+</div>
+{% endif%}
+{% if score %}
+<div class="container">
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+  		<strong>Success</strong> Your score is {{ score }}.
+  		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+  		</button>
+		</div>
+</div>
+{% endif%}
+{% if final_validation %}
+<div class="container">
+    <div class="alert alert-primary show" role="alert">
+      <strong>Final validation:</strong> From now on your scores are calculated on a fresh validation set and may vary greatly from previous results!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+</div>
+{% endif%}
+<!--  -->
+<div class="container">
+  <div class="row">
+    <div class="col">
+    <div class="card">
+      <div class="card-header"> Predictions submission </div>
+    <div class="card-body">
+      <!-- <form action = "http://localhost:5000/upload" method = "POST" enctype = "multipart/form-data"> -->
+      <form action = "{{ url_for('file_submission') }}" method = "POST" enctype = "multipart/form-data">
+         <div class="form-group">
+           <label for="formFileInput">File</label>
+           <input type="file" name="file" id="formFileInput" class="form-control-file"/>
+        </div>
+        <div class="form-group">
+           <label for="formUserInput">User</label>
+           <input type="text" name="user" id="formUserInput" class="form-control"/>
+        </div>
+         <input type="submit"/>
+         <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+      </form>
+    </div>
+  	</div>
+		</div>
+    <div class="col">
+    <div class="card">
+      <div class="card-header"> Score Ranking </div>
+    <div class="card-body">
+        <table class="table table-striped-dark">
+    			<thead>
+          <tr>
+            <th> #rank </th>
+            <th> #haiku-nick </th>
+            <th> #score </th>
+          </tr>
+          </thead>
+          {% for rank, nick, score in user_ranking %}
+          <tr>
+            <td> {{ rank }} </td>
+            <td> {{ nick }} </td>
+            <td> {{ score }} </td>
+          </tr>
+          {% endfor %}
+        </table>
+    </div>
+  </div>
+	</div>
+  </div>
+</div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
+    <!-- momentjs -->
+    <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+    <!-- chartartist -->
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<script>
+var chart = new Chartist.Line('.ct-chart',
+// data
+{
+  series: [
+    {
+      name: 'scores',
+      data: [
+      	{% for score in high_scores %}
+      		{x: new Date( {{ score[1] }} * 1000), y: {{ score[0] }} },
+      	{% endfor %}
+      ]
+    },
+  ]
+}, 
+// options
+{
+  // title: {
+  //           display: true,
+  //           text: 'Score chart',
+  //           position: "bottom"
+  //       },
+  // low: 0,
+  high: 3,
+  showArea: true,
+  // showGridBackground: true,
+  height: "300px",
+  axisX: {
+    type: Chartist.FixedScaleAxis,
+    divisor: 5,
+    labelInterpolationFnc: function(value) {
+      return moment(value).format('MMM D');
+    }
+  }
+});
+</script>
+{% endblock %}

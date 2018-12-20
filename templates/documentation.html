@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block content %}
+<div clas="container">
+  <br>
+  <h2> Recommender Systems </h2>
+  <p>
+  Casually speaking, a recommender system is a piece of software that recommends items to users.
+  E.g. Amazon recommends products to its customers, Netflix recommends movies to its subscribers
+  and financial service providers recommend financial products for their customers portfolio.
+  The goal is to predict the rating or value of an item for a specific user, based on previous ratings or user information.
+</p>
+<p>
+  In this project you will implement a recommender system based on various collaborative filtering techniques.
+  Data and starter code can be found in this <a href="https://ci.inf-i2.uni-jena.de/sll/final-project.git"> gitlab repository </a>.
+</p>
+  <div id="accordion">
+
+  <div class="card">
+    <div class="card-header">
+      <a class="card-link" data-toggle="collapse" href="#collapseData">
+        Data
+      </a>
+    </div>
+    <div id="collapseData" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+      	<p>
+        The file "train.csv" contains  461806 triples of the form (i, j, yij), where i refers to the user,
+        j to the item and yij is the corresponding rating with integer values between 0 and 4. The file "qualifiying.csv" contains 81495 tuples of the form (i, j) for which the corresponding rating should be predicted. <br>
+
+        The data can be structurized in matrix form, where each row represents a user and each column represents an item. Since we do not have additional information about users and items, the problem to complete this matrix can be solved with collaborative filtering methods. The challenge in designing collaborative filtering methods is that the data matrix is highly sparse.
+    	</p>
+          <div class="text-center">
+  			<img src="static/img/rsmatrix.png" class="img-fluid">
+  		  </div>
+      </div>
+    </div>
+  </div>
+	<div class="card">
+    <div class="card-header">
+      <a class="collapsed card-link" data-toggle="collapse" href="#collapseCode">
+        Code
+      </a>
+    </div>
+    <div id="collapseCode" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+        <pre><code class="language-python">
+import numpy as np
+
+# read train set and qualifying set
+Xq = np.genfromtxt("qualifying.csv", delimiter=",", dtype=np.int)
+Xt = np.genfromtxt("data/train.csv", delimiter=",", dtype=np.int)
+
+# predict ratings
+mean = np.mean(Xt[:, 2])
+Xq_mean = np.append(Xq, np.full((Xq.shape[0], 1), mean), axis=1)
+
+# save in right format
+np.savetxt("qualifying_mean.csv", Xq_mean,
+           delimiter=",", newline="\n", encoding="utf-8")
+
+        </code></pre>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <a class="collapsed card-link" data-toggle="collapse" href="#collapseSubmissions">
+        File Submissions
+      </a>
+    </div>
+    <div id="collapseSubmissions" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+      	You were given a user-id and a nick-name. You need your user-id to submit to the webserver. The nick-name is used for the score ranking game. You can submit the completed qualifying.csv file via the prediction submission form under the following constraints:
+          <ul>
+    		<li>CSV file format</li>
+    		<li>UTF-8 encoding</li>
+    		<li>Max 9MB file size</li>
+  		  </ul>
+  		 Since you should NOT fit your models to the validation set, the number of your submissions is limited per day.	
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header">
+      <a class="collapsed card-link" data-toggle="collapse" href="#collapseLiterature">
+       	Techniques
+      </a>
+    </div>
+    <div id="collapseLiterature" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+  <h4> Collaborative filtering approaches </h4>
+
+  <p> Current collaborative filtering approaches can be classified as follows: </p>
+  <p> <span class="font-weight-bold"> Neighborhood based algorithms </span><br>  
+  These were among the earliest collaborative filtering algorithms. Here the ratings of user-item combinations are predicted on
+  the basis of their neighborhoods (k-nearest neighbors algorithms). 
+  </p>
+  <p> <span class="font-weight-bold"> Model-based methods </span><br>
+  	In model-based methods, machine learning and data mining
+methods are used in context of predictive models. In cases where the model is
+parameterized, the parameters of this model are learned within the context of an
+optimization framework. Some examples of such model-based methods include decision
+trees, rule-based models, Bayesian methods and latent factor models. Many of
+these methods, such as latent factor models, have a high level of coverage even for
+sparse ratings matrices. One method that seemed to work exceptionally well is based on Nonnegative Matrix Factorization.
+  </p>
+  <p> <span class="font-weight-bold"> Hybrid methods </span><br>
+  	Obviously you can combine various techniques. In fact, real world implementations usually fall under this category.
+  </p>
+  <p>
+  All these methods are descibed in the book "Recommender Systems: The Textbook" by Charu C. Aggarwal.
+</p>
+      </div>
+    </div>
+  </div>
+	</div>
+</div>
+{% endblock %}

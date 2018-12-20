@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container h-100">
+	{% if high_score %}
+		<h1> Highscore: {{ high_score }} </h1>
+	{% endif %}
+	{% if score %}
+		<h1> Your Score: {{ score }} </h1>
+	{% endif %}
+	{% if high_score_user %}
+		<h1> Your High-Score: {{ high_score_user }} </h1>
+	{% endif %}
+	{% if high_scores %}
+		<div class="ct-chart"></div>
+	{% endif %}
+</div>
+{% if user_ranking %}
+<div class="container h-100">
+	<table>
+	{% for rank, nick, score in user_ranking %}
+		<tr>
+			<th> {{ rank }} </th>
+			<th> {{ nick }} </th>
+			<th> {{ score }} </th>
+		</tr>
+	{% endfor %}
+	</table>
+</div>
+{% endif %}
+<br>
+<div class="container h-100">
+{% if errmsg %}
+	<span> {{ errmsg }}</span>
+{% endif %}
+</div>
+<br>
+<div class="container h-100">
+  <div class="row h-100 justify-content-center align-items-center">
+    <form action = "http://localhost:5000/" method = "POST" 
+         enctype = "multipart/form-data" class="col-12">
+         <div class="form-group">
+	         <label for="formFileInput">File</label>
+	         <input type="file" name="file" id="formFileInput" class="form-control-file"/>
+	      </div>
+	      <div class="form-group">
+	         <label for="formUserInput">User</label>
+	         <input type="text" name="user" id="formUserInput" class="form-control"/>
+	      </div>
+         <input type="submit"/>
+         <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+      </form>
+  </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
+    <!-- momentjs -->
+    <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+    <!-- chartartist -->
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<script>
+var chart = new Chartist.Line('.ct-chart', {
+  series: [
+    {
+      name: 'series-1',
+      data: [
+      	{% for score in high_scores %}
+      		{x: new Date( {{ score[1] }} * 1000), y: {{ score[0] }} },
+      	{% endfor %}
+        // {x: new Date(1529930969.8168082 * 1000), y: 1.8973665961010275},
+        // {x: new Date(1529934586.2243702 * 1000), y: 1.473665961010275},
+        // {x: new Date(1529935152.7201538 * 1000), y: 1.3373665961010275},
+      ]
+    },
+    // {% if high_scores_user %}
+    //  {
+    //  	name: 'series-2',
+    // 	data: [
+    // 		{% for score in high_scores_user %}
+    //   		{x: new Date( {{ score[1] }} * 1000), y: {{ score[0] }} },
+    //   	{% endfor %}
+    // 	]
+    //  },
+    // {% endif %}
+    // {
+    //   name: 'series-2',
+    //   data: [
+    //     {x: new Date(143134652600), y: 53},
+    //     {x: new Date(143234652600), y: 35},
+    //     {x: new Date(143334652600), y: 30},
+    //     {x: new Date(143384652600), y: 30},
+    //     {x: new Date(143568652600), y: 10}
+    //   ]
+    // }
+  ]
+}, {
+  // width: "800px",
+  height: "300px",
+  axisX: {
+    type: Chartist.FixedScaleAxis,
+    divisor: 5,
+    labelInterpolationFnc: function(value) {
+      return moment(value).format('MMM D');
+    }
+  }
+});
+</script>
+{% endblock %}

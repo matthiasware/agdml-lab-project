@@ -1,0 +1,13 @@
+*
+!*/
+!*.py
+!*.csv
+!*.npy
+!*.css
+!*.map
+!*.png
+!*.js
+!*.html
+!*.ipynb
+!*.md
+!.gitignore
